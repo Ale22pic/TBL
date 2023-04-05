@@ -1,0 +1,63 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform  288;
+
+boundaryField
+{
+
+    my-velocity-inlet
+    {
+        type            zeroGradient;
+    }
+
+    my-pressure-outlet
+    {
+       type            waveTransmissive;
+       value           uniform 288;    //important for correct I/O
+       field           T;                //the name of the field that we are working on
+       gamma           1.4;              //the ratio of specific heats
+       phi             phi;             //the name of the volumetric flux field ( or if you use the mass flux phi, it will be divided by rho)
+       rho             rho;              //the name of the density field
+       psi             thermo:psi;              //the name of the field that is the deriv. of density with respect to pressure
+       lInf            5;             //a measure of how far away the far-field condition should be
+       fieldInf        288;
+    }
+
+    my-wall
+    {
+        type            zeroGradient;
+    }
+
+    "(backPlanes|frontPlanes)"  
+    {
+        type            empty;
+    }
+    
+    symmetry
+    {
+        type            slip;
+    }
+
+    freeSurf
+    {
+        type            zeroGradient;
+    }
+}
+
+// ************************************************************************* //
